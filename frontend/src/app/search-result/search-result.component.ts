@@ -7,7 +7,7 @@ import { ProductDetailsComponent } from '../product-details/product-details.comp
 import { ActivatedRoute, Router } from '@angular/router'
 import { ProductService } from '../Services/product.service'
 import { BasketService } from '../Services/basket.service'
-import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core'
+import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ChangeDetectorRef, SecurityContext } from '@angular/core'
 import { MatPaginator } from '@angular/material/paginator'
 import { forkJoin, Subscription } from 'rxjs'
 import { MatTableDataSource } from '@angular/material/table'
@@ -48,7 +48,8 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
   public pageSizeOptions: number[] = []
   public dataSource!: MatTableDataSource<TableEntry>
   public gridDataSource!: any
-  public searchValue?: SafeHtml
+  // public searchValue?: SafeHtml
+  public searchValue?: string
   public resultsLength = 0
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator | null = null
   private productSubscription?: Subscription
@@ -141,7 +142,8 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
         this.io.socket().emit('verifyLocalXssChallenge', queryParam)
       })
       this.dataSource.filter = queryParam.toLowerCase()
-      this.searchValue = this.sanitizer.bypassSecurityTrustHtml(queryParam)
+      // this.searchValue = this.sanitizer.bypassSecurityTrustHtml(queryParam)
+      this.searchValue = queryParam
       this.gridDataSource.subscribe((result: any) => {
         if (result.length === 0) {
           this.emptyState = true
