@@ -7,7 +7,7 @@ import { ProductDetailsComponent } from '../product-details/product-details.comp
 import { ActivatedRoute, Router } from '@angular/router'
 import { ProductService } from '../Services/product.service'
 import { BasketService } from '../Services/basket.service'
-import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ChangeDetectorRef, SecurityContext } from '@angular/core'
+import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core'
 import { MatPaginator } from '@angular/material/paginator'
 import { forkJoin, Subscription } from 'rxjs'
 import { MatTableDataSource } from '@angular/material/table'
