@@ -16,7 +16,8 @@ module.exports = function trackOrder () {
       const result = utils.queryResultToJson(order)
       utils.solveIf(challenges.noSqlOrdersChallenge, () => { return result.data.length > 1 })
       if (result.data[0] === undefined) {
-        result.data[0] = { orderId: id }
+        // result.data[0] = { orderId: id }
+        res.status(404).json({ error: 'Data not found' })
       }
       res.json(result)
     }, () => {
