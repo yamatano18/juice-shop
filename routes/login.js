@@ -29,14 +29,15 @@ module.exports = function login () {
     models.sequelize.query("SELECT * FROM Users WHERE email = ? AND password = ? AND deletedAt IS NULL", {replacements: [req.body.email, insecurity.hash(req.body.password)], model: models.User, plain: true })
       .then((authenticatedUser) => {
         let user = utils.queryResultToJson(authenticatedUser)
-        const rememberedEmail = insecurity.userEmailFrom(req)
-        if (rememberedEmail && req.body.oauth) {
-          models.User.findOne({ where: { email: rememberedEmail } }).then(rememberedUser => {
-            user = utils.queryResultToJson(rememberedUser)
-            utils.solveIf(challenges.loginCisoChallenge, () => { return user.data.id === users.ciso.id })
-            afterLogin(user, res, next)
-          })
-        } else if (user.data && user.data.id && user.data.totpSecret !== '') {
+        // const rememberedEmail = insecurity.userEmailFrom(req)
+        // if (rememberedEmail && req.body.oauth) {
+        //   models.User.findOne({ where: { email: rememberedEmail } }).then(rememberedUser => {
+        //     user = utils.queryResultToJson(rememberedUser)
+        //     utils.solveIf(challenges.loginCisoChallenge, () => { return user.data.id === users.ciso.id })
+        //     afterLogin(user, res, next)
+        //   })
+        // } else
+        if (user.data && user.data.id && user.data.totpSecret !== '') {
           res.status(401).json({
             status: 'totp_token_required',
             data: {
