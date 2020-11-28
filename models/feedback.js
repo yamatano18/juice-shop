@@ -15,7 +15,7 @@ module.exports = (sequelize, { STRING, INTEGER }) => {
       set (comment) {
         let sanitizedComment
         if (!utils.disableOnContainerEnv()) {
-          sanitizedComment = insecurity.sanitizeHtml(comment)
+          sanitizedComment = insecurity.sanitizeSecure(comment)
           utils.solveIf(challenges.persistedXssFeedbackChallenge, () => { return utils.contains(sanitizedComment, '<iframe src="javascript:alert(`xss`)">') })
         } else {
           sanitizedComment = insecurity.sanitizeSecure(comment)
