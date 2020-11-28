@@ -6,6 +6,7 @@
 const utils = require('../lib/utils')
 const insecurity = require('../lib/insecurity')
 const models = require('../models/index')
+const user = require('../models/user')
 const challenges = require('../data/datacache').challenges
 
 module.exports = function retrieveBasket () {
@@ -14,16 +15,25 @@ module.exports = function retrieveBasket () {
     models.Basket.findOne({ where: { id }, include: [{ model: models.Product, paranoid: false }] })
       .then(basket => {
         /* jshint eqeqeq:false */
-        utils.solveIf(challenges.basketAccessChallenge, () => {
-          const user = insecurity.authenticatedUsers.from(req)
-          return user && id && id !== 'undefined' && id !== 'null' && user.bid != id // eslint-disable-line eqeqeq
-        })
-        if (basket && basket.Products && basket.Products.length > 0) {
-          for (let i = 0; i < basket.Products.length; i++) {
-            basket.Products[i].name = req.__(basket.Products[i].name)
+        const user = insecurity.authenticatedUsers.from(req)
+        if (user.bid == id) {
+          utils.solveIf(challenges.basketAccessChallenge, () => {
+            return user && id && id !== 'undefined' && id !== 'null' && user.bid != id // eslint-disable-line eqeqeq
+          })
+          if (basket && basket.Products && basket.Products.length > 0) {
+            for (let i = 0; i < basket.Products.length; i++) {
+              basket.Products[i].name = req.__(basket.Products[i].name)
+            }
           }
+          res.json(utils.queryResultToJson(basket))
+        } else {
+          res.status(403).json({
+            status: 'Forbidden',
+            data: {
+              message: "You are trying to get not your basket!"
+            }
+          })
         }
-        res.json(utils.queryResultToJson(basket))
       }).catch(error => {
         next(error)
       })
