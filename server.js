@@ -232,8 +232,8 @@ app.use('/ftp(?!/quarantine)/:file', fileServer())
 app.use('/ftp/quarantine/:file', quarantineServer())
 
 /* /encryptionkeys directory browsing */
-app.use('/encryptionkeys', serveIndexMiddleware, serveIndex('encryptionkeys', { icons: true, view: 'details' }))
-app.use('/encryptionkeys/:file', keyServer())
+// app.use('/encryptionkeys', serveIndexMiddleware, serveIndex('encryptionkeys', { icons: true, view: 'details' }))
+// app.use('/encryptionkeys/:file', keyServer())
 
 /* /logs directory browsing */
 app.use('/support/logs', serveIndexMiddleware, serveIndex('logs', { icons: true, view: 'details' }))

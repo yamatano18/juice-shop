@@ -16,12 +16,13 @@ module.exports = function servePublicFiles () {
       verify(file, res, next)
     } else {
       res.status(403)
-      next(new Error('File names cannot contain forward slashes!'))
+      next('File names cannot contain forward slashes!')
     }
   }
 
   function verify (file, res, next) {
-    if (file && (endsWithWhitelistedFileType(file) || (file === 'incident-support.kdbx'))) {
+    let fileStripped = insecurity.cutOffPoisonNullByte(file)
+    if (file && file === fileStripped && (endsWithWhitelistedFileType(file) || (file === 'incident-support.kdbx'))) {
       file = insecurity.cutOffPoisonNullByte(file)
 
       utils.solveIf(challenges.directoryListingChallenge, () => { return file.toLowerCase() === 'acquisitions.md' })
@@ -30,7 +31,7 @@ module.exports = function servePublicFiles () {
       res.sendFile(path.resolve(__dirname, '../ftp/', file))
     } else {
       res.status(403)
-      next(new Error('Only .md and .pdf files are allowed!'))
+      next('Only .md and .pdf files are allowed!')
     }
   }
 
